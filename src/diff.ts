@@ -22,16 +22,13 @@ function mergeDefaults(opts?: MonacoDiffOptions) {
 export async function createMonacoDiff(container: HTMLElement, monaco: typeof monacoEditor, opts?: MonacoDiffOptions): Promise<MonacoDiffInstance> {
   const options = mergeDefaults(opts);
 
-  // monaco is imported from 'monaco-editor' at top. If you want to support a consumer
-  // that provides monaco via window.monaco, you may add fallback logic here.
-
   // create models and diff editor
   const originalModel = monaco.editor.createModel('', options.language);
   const modifiedModel = monaco.editor.createModel('', options.language);
 
   const diffEditor = monaco.editor.createDiffEditor(container, {
-    renderSideBySide: options.renderSideBySide,
-    automaticLayout: options.automaticLayout,
+    renderSideBySide: options.renderSideBySide, // render two editors or one merged editor
+    automaticLayout: options.automaticLayout, // auto merge two editors
     enableSplitViewResizing: false,
     renderIndicators: true,
     renderGutterMenu: false, // hide gutter menu(the menu between two editors)
@@ -40,9 +37,6 @@ export async function createMonacoDiff(container: HTMLElement, monaco: typeof mo
   });
 
   diffEditor.setModel({ original: originalModel, modified: modifiedModel });
-
-  const originalDecorations: string[] = [];
-  const modifiedDecorations: string[] = [];
 
   async function setValue(original: string, modified: string) {
     originalModel.setValue(original);
@@ -65,13 +59,6 @@ export async function createMonacoDiff(container: HTMLElement, monaco: typeof mo
   }
 
   function dispose() {
-    try {
-      const origEditor = diffEditor.getOriginalEditor();
-      const modEditor = diffEditor.getModifiedEditor();
-      origEditor.deltaDecorations(originalDecorations, []);
-      modEditor.deltaDecorations(modifiedDecorations, []);
-    }
-    catch {}
     try {
       diffEditor.dispose();
     }
