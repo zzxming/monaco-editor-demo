@@ -1,0 +1,30 @@
+{
+  "name": "monaco-diff-demo",
+  "version": "0.0.0",
+  "description": "Monaco Diff editor.",
+  "license": "MIT",
+  "keywords": [
+    "monaco",
+    "diff"
+  ],
+  "main": "dist/index.mjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.mts",
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "lint": "eslint"
+  },
+  "devDependencies": {
+    "@prettier/plugin-xml": "^3.4.2",
+    "@types/node": "^24.10.0",
+    "@typescript-eslint/eslint-plugin": "^8.46.3",
+    "@typescript-eslint/parser": "^8.46.3",
+    "@zzxming/eslint-config": "^0.6.0",
+    "eslint": "^9.39.1",
+    "monaco-editor": "^0.54.0",
+    "tsdown": "^0.15.12",
+    "tsx": "^4.20.6",
+    "typescript": "~5.9.3"
+  }
+}
