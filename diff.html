@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        margin: 0;
+      }
+      #container {
+        width: 100vw;
+        height: 100vh;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container"></div>
+
+    <script src="https://unpkg.com/monaco-editor@latest/min/vs/loader.js"></script>
+    <script src="./diff.iife.js"></script>
+    <script>
+      const { createMonacoDiff } = window.bundle;
+      const container = document.getElementById('container');
+      require.config({ paths: { vs: 'https://unpkg.com/monaco-editor@latest/min/vs' } });
+
+      require(['vs/editor/editor.main'], function () {
+        createMonacoDiff(container, monaco, {
+          language: 'typescript',
+          contextmenu: false,
+        }).then((inst) => {
+          inst.setValue(
+            `interface User {
+  id: number;
+  name: string;
+  email: string;
+  age: number;
+}
+
+class UserService {
+  private users: User[] = [];
+
+  addUser(user: User): void {
+    this.users.push(user);
+  }
+
+  removeUser(id: number): boolean {
+    const index = this.users.findIndex(u => u.id === id);
+    if (index !== -1) {
+      this.users.splice(index, 1);
+      return true;
+    }
+    return false;
+  }
+
+  getUserById(id: number): User | undefined {
+    return this.users.find(u => u.id === id);
+  }
+
+  getAllUsers(): User[] {
+    return [...this.users];
+  }
+}`,
+            `interface User {
+  id: number;
+  name: string;
+  email: string;
+  age: number;
+  isActive: boolean; // Added new field
+  createdAt: Date;   // Added new field
+}
+
+class UserService {
+  private users: User[] = [];
+  private nextId: number = 1; // Added ID generator
+
+  addUser(userData: Omit<User, 'id' | 'createdAt'>): User {
+    const user: User = {
+      ...userData,
+      id: this.nextId++,
+      createdAt: new Date(),
+      isActive: true
+    };
+    this.users.push(user);
+    return user;
+  }
+
+  removeUser(id: number): boolean {
+    const index = this.users.findIndex(u => u.id === id);
+    if (index !== -1) {
+      // Changed to soft delete
+      this.users[index].isActive = false;
+      return true;
+    }
+    return false;
+  }
+
+  getUserById(id: number): User | undefined {
+    return this.users.find(u => u.id === id && u.isActive);
+  }
+
+  getAllActiveUsers(): User[] {
+    return this.users.filter(u => u.isActive);
+  }
+
+  updateUser(id: number, updates: Partial<Omit<User, 'id' | 'createdAt'>>): boolean {
+    const user = this.getUserById(id);
+    if (user) {
+      Object.assign(user, updates);
+      return true;
+    }
+    return false;
+  }
+}`,
+          );
+        });
+      });
+    </script>
+  </body>
+</html>
