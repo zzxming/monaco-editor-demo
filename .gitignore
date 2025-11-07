@@ -2,3 +2,5 @@ dist
 node_modules
 
 .eslintcache
+
+docs/*.iife.js

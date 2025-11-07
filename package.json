@@ -22,6 +22,7 @@
     "@typescript-eslint/parser": "^8.46.3",
     "@zzxming/eslint-config": "^0.6.0",
     "eslint": "^9.39.1",
+    "glob": "^11.0.3",
     "monaco-editor": "^0.54.0",
     "tsdown": "^0.15.12",
     "tsx": "^4.20.6",
