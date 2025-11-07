@@ -26,8 +26,6 @@ var bundle = (function(exports) {
 			original: originalModel,
 			modified: modifiedModel
 		});
-		const originalDecorations = [];
-		const modifiedDecorations = [];
 		async function setValue(original, modified) {
 			originalModel.setValue(original);
 			modifiedModel.setValue(modified);
@@ -46,12 +44,6 @@ var bundle = (function(exports) {
 			}
 		}
 		function dispose() {
-			try {
-				const origEditor = diffEditor.getOriginalEditor();
-				const modEditor = diffEditor.getModifiedEditor();
-				origEditor.deltaDecorations(originalDecorations, []);
-				modEditor.deltaDecorations(modifiedDecorations, []);
-			} catch {}
 			try {
 				diffEditor.dispose();
 			} catch {}
