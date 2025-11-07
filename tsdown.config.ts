@@ -6,6 +6,7 @@ export default defineConfig([
   {
     format: 'iife',
     platform: 'browser',
+    ignoreWatch: ['docs'],
     entry: ['./src/*.ts'],
     noExternal: [],
     outputOptions: {
@@ -26,6 +27,7 @@ export default defineConfig([
   {
     format: 'es',
     entry: ['./src/*.ts'],
+    ignoreWatch: ['docs'],
     noExternal: [],
   },
 ]);
