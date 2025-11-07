@@ -72,11 +72,17 @@ export async function createMonacoDiff(container: HTMLElement, monaco: typeof mo
       modEditor.deltaDecorations(modifiedDecorations, []);
     }
     catch {}
-    try { diffEditor.dispose(); }
+    try {
+      diffEditor.dispose();
+    }
     catch {}
-    try { originalModel.dispose(); }
+    try {
+      originalModel.dispose();
+    }
     catch {}
-    try { modifiedModel.dispose(); }
+    try {
+      modifiedModel.dispose();
+    }
     catch {}
   }
 
