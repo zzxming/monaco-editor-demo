@@ -3,19 +3,18 @@ import type * as monacoEditor from 'monaco-editor';
 export type Language = string;
 export interface MonacoDiffOptions {
   language?: Language;
-  renderSideBySide?: boolean;
-  automaticLayout?: boolean;
+  editorOptions?: Parameters<typeof monacoEditor.editor.createDiffEditor>[1];
 }
 export interface MonacoDiffInstance {
   setValue: (original: string, modified: string) => Promise<void>;
   updateOptions: (opts: Partial<MonacoDiffOptions>) => void;
   dispose: () => void;
 }
+
 function mergeDefaults(opts?: MonacoDiffOptions) {
   return {
     language: opts?.language ?? 'javascript',
-    renderSideBySide: opts?.renderSideBySide ?? true,
-    automaticLayout: opts?.automaticLayout ?? true,
+    editorOptions: opts?.editorOptions ?? {},
   } as Required<MonacoDiffOptions>;
 }
 
@@ -27,13 +26,14 @@ export async function createMonacoDiff(container: HTMLElement, monaco: typeof mo
   const modifiedModel = monaco.editor.createModel('', options.language);
 
   const diffEditor = monaco.editor.createDiffEditor(container, {
-    renderSideBySide: options.renderSideBySide, // render two editors or one merged editor
-    automaticLayout: options.automaticLayout, // auto merge two editors
+    renderSideBySide: true, // render two editors or one merged editor
+    automaticLayout: true, // auto merge two editors
     enableSplitViewResizing: false,
     renderIndicators: true,
     renderGutterMenu: false, // hide gutter menu(the menu between two editors)
     originalEditable: false, // left editor is editable
     readOnly: true, // right editor is readOnly
+    ...options.editorOptions,
   });
 
   diffEditor.setModel({ original: originalModel, modified: modifiedModel });
@@ -48,10 +48,7 @@ export async function createMonacoDiff(container: HTMLElement, monaco: typeof mo
 
   function updateOptions(partial: Partial<MonacoDiffOptions>) {
     Object.assign(options, partial);
-    diffEditor.updateOptions({
-      renderSideBySide: options.renderSideBySide,
-      automaticLayout: options.automaticLayout,
-    });
+    diffEditor.updateOptions(options.editorOptions);
     if (partial.language) {
       monaco.editor.setModelLanguage(originalModel, options.language);
       monaco.editor.setModelLanguage(modifiedModel, options.language);
