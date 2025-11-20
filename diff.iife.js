@@ -5,8 +5,7 @@ var bundle = (function(exports) {
 	function mergeDefaults(opts) {
 		return {
 			language: opts?.language ?? "javascript",
-			renderSideBySide: opts?.renderSideBySide ?? true,
-			automaticLayout: opts?.automaticLayout ?? true
+			editorOptions: opts?.editorOptions ?? {}
 		};
 	}
 	async function createMonacoDiff(container, monaco, opts) {
@@ -14,13 +13,14 @@ var bundle = (function(exports) {
 		const originalModel = monaco.editor.createModel("", options.language);
 		const modifiedModel = monaco.editor.createModel("", options.language);
 		const diffEditor = monaco.editor.createDiffEditor(container, {
-			renderSideBySide: options.renderSideBySide,
-			automaticLayout: options.automaticLayout,
+			renderSideBySide: true,
+			automaticLayout: true,
 			enableSplitViewResizing: false,
 			renderIndicators: true,
 			renderGutterMenu: false,
 			originalEditable: false,
-			readOnly: true
+			readOnly: true,
+			...options.editorOptions
 		});
 		diffEditor.setModel({
 			original: originalModel,
@@ -34,10 +34,7 @@ var bundle = (function(exports) {
 		}
 		function updateOptions(partial) {
 			Object.assign(options, partial);
-			diffEditor.updateOptions({
-				renderSideBySide: options.renderSideBySide,
-				automaticLayout: options.automaticLayout
-			});
+			diffEditor.updateOptions(options.editorOptions);
 			if (partial.language) {
 				monaco.editor.setModelLanguage(originalModel, options.language);
 				monaco.editor.setModelLanguage(modifiedModel, options.language);

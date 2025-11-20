@@ -27,7 +27,11 @@
       require(['vs/editor/editor.main'], function () {
         createMonacoDiff(container, monaco, {
           language: 'typescript',
-          contextmenu: false,
+          editorOptions: {
+            contextmenu: false,
+            originalEditable: true,
+            readOnly: false,
+          },
         }).then((inst) => {
           inst.setValue(
             `interface User {
